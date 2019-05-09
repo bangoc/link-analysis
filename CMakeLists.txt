@@ -1,0 +1,7 @@
+project(LinkAnalysis)
+add_subdirectory(third-party/eigen)
+add_subdirectory(third-party/glog)
+include_directories(third-party/eigen)
+add_executable(hello hello.cc)
+add_executable(la pagerank.cc hits.cc link_analyzer_main.cc)
+target_link_libraries(la glog)
