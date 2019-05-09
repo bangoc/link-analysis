@@ -1,3 +1,4 @@
+#include "base.h"
 #include "hits.h"
 #include "pagerank.h"
 
@@ -33,7 +34,9 @@ void CalculatePagerank(const std::string& fname) {
     edges.push_back(std::make_pair(b, e));
   }
   inp >> epsilon >> maxstep;
-  PageRank(alpha, vertices, edges, epsilon, maxstep, out);
+  json debug;
+  PageRank(alpha, vertices, edges, epsilon, maxstep, out, debug, true);
+  LOG(INFO) << "\nDebug\n" << debug.dump(2);
 }
 
 void CalculateHits(const std::string& fname) {
@@ -59,7 +62,10 @@ void CalculateHits(const std::string& fname) {
     edges.push_back(std::make_pair(b, e));
   }
   inp >> epsilon >> maxstep;
-  Hits(vertices, edges, epsilon, maxstep, hubs, auth);
+
+  json debug;
+  Hits(vertices, edges, epsilon, maxstep, hubs, auth, debug, true);
+  LOG(INFO) << "\nDebug:\n" << debug.dump(2);
 }
 
 int main(int argc, char* argv[]) {

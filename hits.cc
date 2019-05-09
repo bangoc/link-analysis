@@ -1,3 +1,6 @@
+#include "hits.h"
+
+#include "format_helper.h"
 #include "pagerank.h"
 
 #include <fstream>
@@ -28,7 +31,9 @@ void Hits(std::vector<int>& vertices,
           double epsilon,
           const int maxstep,
           std::vector<std::pair<int, double>>& hubs,
-          std::vector<std::pair<int, double>>& auth) {
+          std::vector<std::pair<int, double>>& auth,
+          json& debug,
+          bool is_debug) {
   std::map<int, int> id;
   std::map<int, int> iid;
   int i = 0;
@@ -39,6 +44,9 @@ void Hits(std::vector<int>& vertices,
       iid[i] = v;
       ++i;
     }
+  }
+  if (is_debug) {
+    debug["internal_id"] = id;
   }
   const int n = id.size();
   MatrixXd am = MatrixXd::Zero(n, n);
@@ -52,15 +60,26 @@ void Hits(std::vector<int>& vertices,
   MatrixXd amt = am.transpose();
   LOG(INFO) << "Ma tran ke:\n" << am << std::endl;
   LOG(INFO) << "Ma tran chuyen vi:\n" << amt << std::endl;
+  if (is_debug) {
+    debug["A"] = MatrixToJson(am);
+    debug["At"] = MatrixToJson(amt);
+  }
   MatrixXd aat = am * amt;
   MatrixXd ata = amt * am;
   LOG(INFO) << "\nAAt\n" << aat << std::endl
             << "AtA\n" << ata << std::endl;
+  if (is_debug) {
+    debug["AAt"] = MatrixToJson(aat);
+    debug["AtA"] = MatrixToJson(ata);
+  }
   MatrixXd h1 = MatrixXd::Constant(n, 1, 1);
   MatrixXd h2 = MatrixXd::Constant(n, 1, 1);
   double distance = 1.0;
   int step = 0;
   LOG(INFO) << "hubs: " << std::endl;
+  if (is_debug) {
+    debug["steps"] = json::array();
+  }
   while (distance > epsilon || step >= maxstep) {
     h2 = aat * h1;
     Normalize(h2);
@@ -71,6 +90,13 @@ void Hits(std::vector<int>& vertices,
       distance += std::pow(h2(i, 0) - h1(i, 0), 2);
     }
     DLOG(INFO) << "distance: " << distance;
+    if (is_debug) {
+      json tmp;
+      tmp["step"] = step;
+      tmp["distance"] = distance;
+      tmp["hubs"] = MatrixToJson(h1);
+      debug["steps"].push_back(tmp);
+    }
     h1 = h2;
     ++step;
   }
@@ -84,5 +110,10 @@ void Hits(std::vector<int>& vertices,
               << ": " << hub_score << " " << auth_score << std::endl;
     hubs.push_back(std::make_pair(it.second, hub_score));
     auth.push_back(std::make_pair(it.second, auth_score));
+  }
+  if (is_debug) {
+    debug["external_id"] = iid;
+    debug["hubs"] = MatrixToJson(h1);
+    debug["auth"] = MatrixToJson(a1);
   }
 }
