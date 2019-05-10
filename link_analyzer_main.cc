@@ -1,8 +1,8 @@
 #include "base.h"
+#include "input_helper.h"
 #include "hits.h"
 #include "pagerank.h"
 
-#include <fstream>
 #include <iostream>
 #include <map>
 #include <string>
@@ -11,51 +11,19 @@
 #include <glog/logging.h>
 
 void CalculatePagerank(const std::string& fname) {
-  std::ifstream inp{fname};
   PageRankInput params;
-  std::vector<std::pair<int, double>> out;
-  inp >> params.alpha;
-  int n = 0;
-  inp >> n;
-  for (int i = 0; i < n; ++i) {
-    int v;
-    inp >> v;
-    params.vertices.push_back(v);
-  }
-  int m = 0;
-  inp >> m;
-  for (int i = 0; i < m; ++i) {
-    int b, e;
-    inp >> b >> e;
-    params.edges.push_back(std::make_pair(b, e));
-  }
-  inp >> params.epsilon >> params.maxstep;
+  ParsePageRankInput(params, fname);
   json debug;
+  std::vector<std::pair<int, double>> out;
   PageRank(params, out, debug, true);
   LOG(INFO) << "\nDebug\n" << debug.dump(2);
 }
 
 void CalculateHits(const std::string& fname) {
-  std::ifstream inp{fname};
   HitsInput params;
   std::vector<std::pair<int, double>> hubs;
   std::vector<std::pair<int, double>> auth;
-  int n = 0;
-  inp >> n;
-  for (int i = 0; i < n; ++i) {
-    int v;
-    inp >> v;
-    params.vertices.push_back(v);
-  }
-  int m = 0;
-  inp >> m;
-  for (int i = 0; i < m; ++i) {
-    int b, e;
-    inp >> b >> e;
-    params.edges.push_back(std::make_pair(b, e));
-  }
-  inp >> params.epsilon >> params.maxstep;
-
+  ParseHitsInput(params, fname);
   json debug;
   Hits(params, hubs, auth, debug, true);
   LOG(INFO) << "\nDebug:\n" << debug.dump(2);

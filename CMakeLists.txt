@@ -8,5 +8,6 @@ add_executable(hello hello.cc)
 add_executable(la pagerank.cc
                   hits.cc
                   link_analyzer_main.cc
-                  format_helper.cc)
+                  format_helper.cc
+                  input_helper.cc)
 target_link_libraries(la glog)
