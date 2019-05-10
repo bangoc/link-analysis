@@ -12,39 +12,32 @@
 
 void CalculatePagerank(const std::string& fname) {
   std::ifstream inp{fname};
-  double alpha = 0;
-  double epsilon = 0.0001;
-  int maxstep = 100;
-  std::vector<int> vertices;
-  std::vector<std::pair<int, int>> edges;
+  PageRankInput params;
   std::vector<std::pair<int, double>> out;
-  inp >> alpha;
+  inp >> params.alpha;
   int n = 0;
   inp >> n;
   for (int i = 0; i < n; ++i) {
     int v;
     inp >> v;
-    vertices.push_back(v);
+    params.vertices.push_back(v);
   }
   int m = 0;
   inp >> m;
   for (int i = 0; i < m; ++i) {
     int b, e;
     inp >> b >> e;
-    edges.push_back(std::make_pair(b, e));
+    params.edges.push_back(std::make_pair(b, e));
   }
-  inp >> epsilon >> maxstep;
+  inp >> params.epsilon >> params.maxstep;
   json debug;
-  PageRank(alpha, vertices, edges, epsilon, maxstep, out, debug, true);
+  PageRank(params, out, debug, true);
   LOG(INFO) << "\nDebug\n" << debug.dump(2);
 }
 
 void CalculateHits(const std::string& fname) {
   std::ifstream inp{fname};
-  double epsilon = 0.0001;
-  int maxstep = 100;
-  std::vector<int> vertices;
-  std::vector<std::pair<int, int>> edges;
+  HitsInput params;
   std::vector<std::pair<int, double>> hubs;
   std::vector<std::pair<int, double>> auth;
   int n = 0;
@@ -52,19 +45,19 @@ void CalculateHits(const std::string& fname) {
   for (int i = 0; i < n; ++i) {
     int v;
     inp >> v;
-    vertices.push_back(v);
+    params.vertices.push_back(v);
   }
   int m = 0;
   inp >> m;
   for (int i = 0; i < m; ++i) {
     int b, e;
     inp >> b >> e;
-    edges.push_back(std::make_pair(b, e));
+    params.edges.push_back(std::make_pair(b, e));
   }
-  inp >> epsilon >> maxstep;
+  inp >> params.epsilon >> params.maxstep;
 
   json debug;
-  Hits(vertices, edges, epsilon, maxstep, hubs, auth, debug, true);
+  Hits(params, hubs, auth, debug, true);
   LOG(INFO) << "\nDebug:\n" << debug.dump(2);
 }
 

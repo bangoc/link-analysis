@@ -6,10 +6,7 @@
 #include <map>
 #include <vector>
 
-void Hits(std::vector<int>& vertices,
-          std::vector<std::pair<int, int>>& edges,
-          double epsilon,
-          const int maxstep,
+void Hits(HitsInput& inp,
           std::vector<std::pair<int, double>>& hubs,
           std::vector<std::pair<int, double>>& auth,
           json& debug,

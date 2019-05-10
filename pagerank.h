@@ -3,14 +3,7 @@
 
 #include "base.h"
 
-#include <map>
-#include <vector>
-
-void PageRank(double alpha,
-              std::vector<int>& vertices,
-              std::vector<std::pair<int, int>>& edges,
-              double epsilon,
-              const int maxstep,
+void PageRank(PageRankInput& inp,
               std::vector<std::pair<int, double>>& out,
               json& debug,
               bool is_debug = false);

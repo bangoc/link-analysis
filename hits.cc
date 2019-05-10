@@ -26,10 +26,7 @@ void Normalize(MatrixXd& m) {
   }
 }
 
-void Hits(std::vector<int>& vertices,
-          std::vector<std::pair<int, int>>& edges,
-          double epsilon,
-          const int maxstep,
+void Hits(HitsInput& inp,
           std::vector<std::pair<int, double>>& hubs,
           std::vector<std::pair<int, double>>& auth,
           json& debug,
@@ -37,7 +34,7 @@ void Hits(std::vector<int>& vertices,
   std::map<int, int> id;
   std::map<int, int> iid;
   int i = 0;
-  for (int v: vertices) {
+  for (int v: inp.vertices) {
     if (id.find(v) == id.end()) {
       DLOG(INFO) << v << " " << i;
       id[v] = i;
@@ -50,7 +47,7 @@ void Hits(std::vector<int>& vertices,
   }
   const int n = id.size();
   MatrixXd am = MatrixXd::Zero(n, n);
-  for (auto& it: edges) {
+  for (auto& it: inp.edges) {
     int b = id[it.first];
     int e = id[it.second];
     DLOG(INFO) << b << " " << e << " "
@@ -80,7 +77,8 @@ void Hits(std::vector<int>& vertices,
   if (is_debug) {
     debug["steps"] = json::array();
   }
-  while (distance > epsilon || step >= maxstep) {
+  while (distance > inp.epsilon ||
+         step >= inp.maxstep) {
     h2 = aat * h1;
     Normalize(h2);
     LOG(INFO) << "step " << step << ": " << h1.transpose()

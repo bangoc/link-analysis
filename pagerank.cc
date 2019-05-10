@@ -7,18 +7,14 @@
 #include <string>
 #include <glog/logging.h>
 
-void PageRank(double alpha,
-              std::vector<int>& vertices,
-              std::vector<std::pair<int, int>>& edges,
-              double epsilon,
-              const int maxstep,
+void PageRank(PageRankInput& inp,
               std::vector<std::pair<int, double>>& out,
               json& debug,
               bool is_debug) {
   std::map<int, int> id;
   std::map<int, int> iid;
   int i = 0;
-  for (int v: vertices) {
+  for (int v: inp.vertices) {
     if (id.find(v) == id.end()) {
       DLOG(INFO) << v << " " << i;
       id[v] = i;
@@ -36,7 +32,7 @@ void PageRank(double alpha,
   for (int i = 0; i < n; ++i) {
     ones[i] = 0;
   }
-  for (auto& it: edges) {
+  for (auto& it: inp.edges) {
     int b = id[it.first];
     int e = id[it.second];
     DLOG(INFO) << b << " " << e << " "
@@ -57,13 +53,13 @@ void PageRank(double alpha,
   if (is_debug) {
     debug["A12"] = MatrixToJson(t);
   }
-  t *= (1 - alpha);
+  t *= (1 - inp.alpha);
   LOG(INFO) << "Ket qua sau khi thuc hien buoc 3: \n"
             << t << std::endl;
   if (is_debug) {
     debug["A3"] = MatrixToJson(t);
   }
-  t += MatrixXd::Constant(n, n, alpha/n);
+  t += MatrixXd::Constant(n, n, inp.alpha/n);
   LOG(INFO) << "Ma tran chuyen trang thai la: \n"
             << t << std::endl;
   if (is_debug) {
@@ -76,7 +72,8 @@ void PageRank(double alpha,
   if (is_debug) {
     debug["steps"] = json::array();
   }
-  while (distance > epsilon || step >= maxstep) {
+  while (distance > inp.epsilon ||
+         step >= inp.maxstep) {
     p2 = p1 * t;
     LOG(INFO) << "step " << step << ": " << p1
               << " | " << p2 << std::endl;
