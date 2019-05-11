@@ -1,10 +1,11 @@
 #include "input_helper.h"
 
+#include "glog/logging.h"
 #include <fstream>
 
 namespace {
 
-void ParseGraph(std::ifstream& inp,
+void ParseGraph(std::istream& inp,
     std::vector<int>& vertices,
     std::vector<std::pair<int, int>>& edges) {
   int n = 0;
@@ -25,11 +26,21 @@ void ParseGraph(std::ifstream& inp,
 
 }  // namespace
 
+void ParsePageRankParams(PageRankInput& params,
+                        std::istream& inp) {
+  inp >> params.alpha;
+  ParseGraph(inp, params.vertices, params.edges);
+  inp >> params.epsilon >> params.maxstep;
+}
 
 void ParsePageRankInput(PageRankInput& params,
                         const std::string& fname) {
   std::ifstream inp{fname};
-  inp >> params.alpha;
+  ParsePageRankParams(params, inp);
+}
+
+void ParseHitsParams(HitsInput& params,
+                     std::istream& inp) {
   ParseGraph(inp, params.vertices, params.edges);
   inp >> params.epsilon >> params.maxstep;
 }
@@ -37,6 +48,5 @@ void ParsePageRankInput(PageRankInput& params,
 void ParseHitsInput(HitsInput& params,
                     const std::string& fname) {
   std::ifstream inp{fname};
-  ParseGraph(inp, params.vertices, params.edges);
-  inp >> params.epsilon >> params.maxstep;
+  ParseHitsParams(params, inp);
 }

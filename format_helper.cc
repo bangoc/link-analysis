@@ -15,3 +15,20 @@ json MatrixToJson(const MatrixXd& m) {
   r["data"] = data;
   return r;
 }
+
+std::ostream& operator<<(std::ostream& out, PageRankInput& params) {
+  out << params.alpha << "\n"
+      << params.vertices.size() << ": ";
+  for (int v: params.vertices) {
+    out << v << " ";
+  }
+  out << std::endl
+      << params.edges.size() << ": ";
+  for (auto& it: params.edges) {
+    out << it.first << "-->" << it.second << "; ";
+  }
+  out << std::endl;
+  out << params.epsilon << " "
+      << params.maxstep << "\n";
+  return out;
+}

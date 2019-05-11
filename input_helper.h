@@ -3,6 +3,12 @@
 
 #include "base.h"
 
+void ParsePageRankParams(PageRankInput& params,
+                        std::istream& inp);
+
+void ParseHitsParams(HitsInput& params,
+                     std::istream& inp);
+
 void ParsePageRankInput(PageRankInput& params,
                         const std::string& fname);
 

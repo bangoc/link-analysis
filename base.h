@@ -11,11 +11,11 @@ using json = nlohmann::json;
 using Eigen::MatrixXd;
 
 struct PageRankInput {
-  double alpha;
+  double alpha = 0.75;
   std::vector<int> vertices;
   std::vector<std::pair<int, int>> edges;
-  double epsilon;
-  int maxstep;
+  double epsilon = 0.00001;
+  int maxstep = 5;
 };
 
 struct HitsInput {
