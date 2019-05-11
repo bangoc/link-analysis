@@ -64,8 +64,20 @@ void HitsPostHandler(
 int main(int argc, char* argv[]) {
   google::InitGoogleLogging(argv[0]);
 
+  if (argc != 3) {
+    LOG(ERROR) << "./server 0.0.0.0 8080" << std::endl
+               << "to start server (you can use other host port)" << std::endl;
+    return 1;
+  }
+
   HttpServer server;
-  server.config.port = 8080;
+  server.config.address = argv[1];
+  int port = 8080;
+  {
+    std::stringstream ss{argv[2]};
+    ss >> port;
+  }
+  server.config.port = port;
   server.config.thread_pool_size = 8;
   server.resource["^/pagerank$"]["POST"] = PageRankPostHandler;
   server.resource["^/hits$"]["POST"] = HitsPostHandler;
