@@ -72,8 +72,8 @@ void PageRank(PageRankInput& inp,
   if (is_debug) {
     debug["steps"] = json::array();
   }
-  while (distance > inp.epsilon &&
-         step < 5) {
+  while (distance > inp.GetEpsilon() &&
+         step < inp.GetMaxStep()) {
     p2 = p1 * t;
     LOG(INFO) << "step " << step << ": " << p1
               << " | " << p2 << std::endl;

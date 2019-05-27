@@ -24,13 +24,21 @@ void ParseGraph(std::istream& inp,
   }
 }
 
+void ParsePowerInput(PowerInput& params, std::istream& inp) {
+  double epsilon;
+  int maxstep;
+  inp >> epsilon >> maxstep;
+  params.SetEpsilon(epsilon);
+  params.SetMaxStep(maxstep);
+}
+
 }  // namespace
 
 void ParsePageRankParams(PageRankInput& params,
                         std::istream& inp) {
   inp >> params.alpha;
   ParseGraph(inp, params.vertices, params.edges);
-  inp >> params.epsilon >> params.maxstep;
+  ParsePowerInput(params, inp);
 }
 
 void ParsePageRankInput(PageRankInput& params,
@@ -42,7 +50,7 @@ void ParsePageRankInput(PageRankInput& params,
 void ParseHitsParams(HitsInput& params,
                      std::istream& inp) {
   ParseGraph(inp, params.vertices, params.edges);
-  inp >> params.epsilon >> params.maxstep;
+  ParsePowerInput(params, inp);
 }
 
 void ParseHitsInput(HitsInput& params,

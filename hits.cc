@@ -77,8 +77,8 @@ void Hits(HitsInput& inp,
   if (is_debug) {
     debug["steps"] = json::array();
   }
-  while (distance > inp.epsilon ||
-         step >= inp.maxstep) {
+  while (distance > inp.GetEpsilon() &&
+         step < inp.GetMaxStep()) {
     h2 = aat * h1;
     Normalize(h2);
     LOG(INFO) << "step " << step << ": " << h1.transpose()

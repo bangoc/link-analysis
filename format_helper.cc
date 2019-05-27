@@ -28,7 +28,7 @@ std::ostream& operator<<(std::ostream& out, PageRankInput& params) {
     out << it.first << "-->" << it.second << "; ";
   }
   out << std::endl;
-  out << params.epsilon << " "
-      << params.maxstep << "\n";
+  out << params.GetEpsilon() << " "
+      << params.GetMaxStep() << "\n";
   return out;
 }
