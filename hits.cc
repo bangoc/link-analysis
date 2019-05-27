@@ -9,6 +9,8 @@
 #include <string>
 #include <glog/logging.h>
 
+namespace {
+
 void Normalize(MatrixXd& m) {
   if (m.size() > 0) {
     auto* d = m.data();
@@ -26,7 +28,7 @@ void Normalize(MatrixXd& m) {
   }
 }
 
-void Hits(HitsInput& inp,
+void InternalHits(HitsInput& inp,
           std::vector<std::pair<int, double>>& hubs,
           std::vector<std::pair<int, double>>& auth,
           json& debug,
@@ -113,5 +115,19 @@ void Hits(HitsInput& inp,
     debug["external_id"] = iid;
     debug["hubs"] = MatrixToJson(h1);
     debug["auth"] = MatrixToJson(a1);
+  }
+}
+
+}  // namespace
+
+void Hits(HitsInput& inp,
+          std::vector<std::pair<int, double>>& hubs,
+          std::vector<std::pair<int, double>>& auth,
+          json& debug,
+          bool is_debug) {
+  try {
+    InternalHits(inp, hubs, auth, debug, is_debug);
+  } catch (...) {
+    debug["exception"] = true;
   }
 }

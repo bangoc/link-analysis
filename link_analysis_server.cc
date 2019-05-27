@@ -22,43 +22,58 @@ void ResponseOk(std::shared_ptr<HttpServer::Response> response,
             << content;
 }
 
+void ResponseException(std::shared_ptr<HttpServer::Response> response) {
+  std::string content = "Exception!";
+  *response << "HTTP/1.1 400 Bad Request\r\n"
+            << "Content-Length: " << content.length() << "\r\n\r\n"
+            << content;
+}
+
 }  // namespace
 
 void PageRankPostHandler(
       std::shared_ptr<HttpServer::Response> response,
       std::shared_ptr<HttpServer::Request> request) {
-  std::string content = request->content.string();
-  LOG(INFO) << "Request contents: \n"
-            << content;
-  std::stringstream ss{content};
-  PageRankInput params;
-  ParsePageRankParams(params, ss);
+  try {
+    std::string content = request->content.string();
+    LOG(INFO) << "Request contents: \n"
+              << content;
+    std::stringstream ss{content};
+    PageRankInput params;
+    ParsePageRankParams(params, ss);
 
-  LOG(INFO) << "\nParams: \n" << params;
-  json debug;
-  std::vector<std::pair<int, double>> out;
-  PageRank(params, out, debug, true);
-  LOG(INFO) << "\nDebug\n" << debug.dump(2);
-  ResponseOk(response, debug);
+    LOG(INFO) << "\nParams: \n" << params;
+    json debug;
+    std::vector<std::pair<int, double>> out;
+    PageRank(params, out, debug, true);
+    LOG(INFO) << "\nDebug\n" << debug.dump(2);
+    ResponseOk(response, debug);
+  } catch (...) {
+    ResponseException(response);
+  }
 }
 
 void HitsPostHandler(
       std::shared_ptr<HttpServer::Response> response,
       std::shared_ptr<HttpServer::Request> request) {
-  std::string content = request->content.string();
-  LOG(INFO) << "Request contents: \n"
-            << content;
-  std::stringstream ss{content};
+  try {
+    std::string content = request->content.string();
+    LOG(INFO) << "Request contents: \n"
+              << content;
+    std::stringstream ss{content};
 
-  HitsInput params;
-  std::vector<std::pair<int, double>> hubs;
-  std::vector<std::pair<int, double>> auth;
-  ParseHitsParams(params, ss);
-  json debug;
-  Hits(params, hubs, auth, debug, true);
-  LOG(INFO) << "\nDebug:\n" << debug.dump(2);
+    HitsInput params;
+    std::vector<std::pair<int, double>> hubs;
+    std::vector<std::pair<int, double>> auth;
+    ParseHitsParams(params, ss);
+    json debug;
+    Hits(params, hubs, auth, debug, true);
+    LOG(INFO) << "\nDebug:\n" << debug.dump(2);
 
-  ResponseOk(response, debug);
+    ResponseOk(response, debug);
+  } catch (...) {
+    ResponseException(response);
+  }
 }
 
 int main(int argc, char* argv[]) {

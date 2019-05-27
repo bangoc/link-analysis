@@ -7,7 +7,9 @@
 #include <string>
 #include <glog/logging.h>
 
-void PageRank(PageRankInput& inp,
+namespace {
+
+void InternalPageRank(PageRankInput& inp,
               std::vector<std::pair<int, double>>& out,
               json& debug,
               bool is_debug) {
@@ -101,5 +103,18 @@ void PageRank(PageRankInput& inp,
   }
   if (is_debug) {
     debug["pagerank"] = MatrixToJson(p1);
+  }
+}
+
+}  // namespace
+
+void PageRank(PageRankInput& inp,
+              std::vector<std::pair<int, double>>& out,
+              json& debug,
+              bool is_debug) {
+  try {
+    InternalPageRank(inp, out, debug, is_debug);
+  } catch (...) {
+    debug["exception"] = true;
   }
 }
