@@ -12,25 +12,27 @@ using Eigen::MatrixXd;
 
 struct PowerInput {
  public:
-  double GetEpsilon() {
+  double GetEpsilon() const {
     return epsilon_;
   }
-  int GetMaxStep() {
+  int GetMaxStep() const {
     return maxstep_;
   }
   void SetEpsilon(double value) {
-    if (epsilon_ < kMinEpsilon) {
-      epsilon_ = kMinEpsilon;
-    } else if (epsilon_ > kMaxEpsilon) {
-      epsilon_ = kMaxEpsilon;
+    if (value < kMinEpsilon) {
+      value = kMinEpsilon;
+    } else if (value > kMaxEpsilon) {
+      value = kMaxEpsilon;
     }
+    epsilon_ = value;
   }
   void SetMaxStep(int value) {
     if (value < kMinMaxStep) {
-      maxstep_ = kMinMaxStep;
+      value = kMinMaxStep;
     } else if (value > kMaxMaxStep) {
-      maxstep_ = kMaxMaxStep;
+      value = kMaxMaxStep;
     }
+    maxstep_ = value;
   }
   static constexpr int kMinMaxStep = 1;
   static constexpr int kMaxMaxStep = 1000;

@@ -28,7 +28,7 @@ void Normalize(MatrixXd& m) {
   }
 }
 
-void InternalHits(HitsInput& inp,
+void InternalHits(const HitsInput& inp,
           std::vector<std::pair<int, double>>& hubs,
           std::vector<std::pair<int, double>>& auth,
           json& debug,
@@ -79,8 +79,7 @@ void InternalHits(HitsInput& inp,
   if (is_debug) {
     debug["steps"] = json::array();
   }
-  while (distance > inp.GetEpsilon() &&
-         step < inp.GetMaxStep()) {
+  do{
     h2 = aat * h1;
     Normalize(h2);
     LOG(INFO) << "step " << step << ": " << h1.transpose()
@@ -98,8 +97,10 @@ void InternalHits(HitsInput& inp,
       debug["steps"].push_back(tmp);
     }
     h1 = h2;
-    ++step;
-  }
+    if (++step > inp.GetMaxStep()) {
+      break;
+    }
+  } while (distance > inp.GetEpsilon());
   MatrixXd a1 = amt * h1;
   Normalize(a1);
   hubs.clear();
@@ -120,7 +121,7 @@ void InternalHits(HitsInput& inp,
 
 }  // namespace
 
-void Hits(HitsInput& inp,
+void Hits(const HitsInput& inp,
           std::vector<std::pair<int, double>>& hubs,
           std::vector<std::pair<int, double>>& auth,
           json& debug,

@@ -6,7 +6,7 @@
 #include <map>
 #include <vector>
 
-void Hits(HitsInput& inp,
+void Hits(const HitsInput& inp,
           std::vector<std::pair<int, double>>& hubs,
           std::vector<std::pair<int, double>>& auth,
           json& debug,

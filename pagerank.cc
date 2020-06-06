@@ -3,6 +3,7 @@
 #include "format_helper.h"
 
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <string>
 #include <glog/logging.h>
@@ -62,7 +63,8 @@ void InternalPageRank(PageRankInput& inp,
     debug["A3"] = MatrixToJson(t);
   }
   t += MatrixXd::Constant(n, n, inp.alpha/n);
-  LOG(INFO) << "Ma tran chuyen trang thai la: \n"
+  LOG(INFO) << std::fixed << std::setprecision(5)
+            << "Ma tran chuyen trang thai la: \n"
             << t << std::endl;
   if (is_debug) {
     debug["T"] = MatrixToJson(t);
@@ -103,6 +105,9 @@ void InternalPageRank(PageRankInput& inp,
   }
   if (is_debug) {
     debug["pagerank"] = MatrixToJson(p1);
+    LOG(INFO) << std::fixed << std::setprecision(5)
+            << "Vec-to PageRank: \n"
+            << p1 << std::endl;
   }
 }
 
